@@ -34,17 +34,22 @@ export default class News extends Component {
   }
   //Update news:
   async updateNews() {
+    this.props.setProgress(0);
     //Write code:
     this.setState({ loading: true });
     let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=ffd32a15b61b4073b3a327daa4412797&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+    this.props.setProgress(10);
     let data = await fetch(url);
+    this.props.setProgress(40);
     let parsedData = await data.json();
+    this.props.setProgress(80);
     console.log(parsedData);
     this.setState({
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
       loading: false,
     });
+    this.props.setProgress(100);
   }
   //Async:
   async componentDidMount() {
@@ -91,7 +96,7 @@ export default class News extends Component {
         <InfiniteScroll
           dataLength={this.state.articles.length}
           next={this.fetchMoreData}
-          hasMore={this.state.articles.length != this.state.totalResults}
+          hasMore={this.state.articles.length !== this.state.totalResults}
           loader={<Spinner />} 
           style={{ overflow: 'hidden' }}>
           <div className="container p-5 d-flex justify-content-around flex-wrap">
