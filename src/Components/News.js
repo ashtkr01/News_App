@@ -11,7 +11,7 @@ const News = (props) => {
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
 
-  // document.title = `NewsApp - ${this.capitalizeFirstLetter(props.category)}`;
+  
 
 
   const capitalizeFirstLetter = (string) => {
@@ -22,7 +22,7 @@ const News = (props) => {
     props.setProgress(0);
     //Write code:
     setLoading(true);
-    let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=ffd32a15b61b4073b3a327daa4412797&page=${page}&pageSize=${props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
     props.setProgress(10);
     let data = await fetch(url);
     props.setProgress(40);
@@ -36,24 +36,17 @@ const News = (props) => {
   }
   //useEffect: and [] -> ek baar run hi hoga:
   useEffect(() => {
-    updateNews();
+    document.title = `NewsApp - ${capitalizeFirstLetter(props.category)}`;
+    updateNews(); 
+    // eslint-disable-next-line
   }, [])
 
-  const handleNextClick = async () => {
-    setPage(page + 1);
-    //Call:
-    updateNews();
-  }
-
-  const handlePrevClick = async () => {
-    setPage(page - 1);
-    //Call:
-    updateNews();
-  }
   //Fetch more data:
   const fetchMoreData = async () => {
+    //setPage will behave asynchronously :
+    // setPage(page + 1);
+    let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pageSize=${props.pageSize}`;
     setPage(page + 1);
-    let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=ffd32a15b61b4073b3a327daa4412797&page=${page}&pageSize=${props.pageSize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
     console.log(parsedData);
@@ -63,7 +56,7 @@ const News = (props) => {
 
   return (
     <>
-      <h1 className='text-center' style={{ margin: "35px 0px" }}>News App - {capitalizeFirstLetter(props.category)}</h1>
+      <h1 className='text-center' style={{ margin: "35px 0px" , marginTop: '90px' }}>News App - {capitalizeFirstLetter(props.category)}</h1>
       {loading && <Spinner />}
       <InfiniteScroll
         dataLength={articles.length}
